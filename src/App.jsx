@@ -19,8 +19,8 @@ export default function App(){
       <header className="header">
         <div className="brand-left">
           <div className={`brand-logo-wrapper brand-logo ${isThinking ? 'thinking' : ''}`}>
-            {/* Use provided external SHAHEEN images as the main logo */}
-            <img src="https://i.postimg.cc/m22gQSbf/SHAHEEN-YS.png" alt="SHAHEEN-YS" className="shaheen-main"/>
+            {/* Use local SHAHEEN images - download them with scripts/download_images.sh */}
+            <img src="/shaheen-logo.png" alt="SHAHEEN-YS" className="shaheen-main"/>
             <img src="/termux-icon.svg" alt="" className="termux-icon"/>
             <div className="brand-text">SHAHEEN-YS</div>
           </div>
@@ -30,8 +30,8 @@ export default function App(){
           </div>
         </div>
         <div>
-          {/* small avatar using another provided image */}
-          <img src="https://i.postimg.cc/sDDgpJVr/SHAHEEN.jpg" alt="user" style={{width:38,height:38,borderRadius:8}}/>
+          {/* small avatar using local image */}
+          <img src="/shaheen-avatar.png" alt="user" style={{width:38,height:38,borderRadius:8}}/>
         </div>
       </header>
 
