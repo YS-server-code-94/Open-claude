@@ -1,96 +1,56 @@
-import { useMode, MODES } from './context/ModeContext';
-import ModeSwitcher from './components/ModeSwitcher';
-import ChatMode from './components/ChatMode';
-import CodeMode from './components/CodeMode';
-import BuildMode from './components/BuildMode';
-import { BuildModeProvider } from './context/BuildModeContext'; // Keeping original context for now if needed, but primary logic will be in BuildContext
-import { BuildProvider } from './context/BuildContext';
-import { ChatProvider } from './context/ChatContext';
+import React, { useState } from 'react'
+import './shaheen-brand.css'
+import './index.css'
 
-import { Moon, Sun, Lock, Unlock, Plus } from 'lucide-react';
-import { useTheme } from './context/ThemeContext';
-import { useChat } from './context/ChatContext';
+export default function App(){
+  const [isThinking, setIsThinking] = useState(false)
+  const [provider, setProvider] = useState('mistral-large-2512')
+  const [prompt, setPrompt] = useState('كيف استطيع مساعدتك اليوم؟')
 
-function AppContent() {
-    const { currentMode } = useMode();
-    const { isDarkMode, toggleTheme } = useTheme();
-    const { isIncognitoMode, toggleIncognitoMode, createNewChat } = useChat();
+  function handleSend(){
+    // Demo: تفعيل الحالة "thinking" لمدة 2.5 ثانية
+    setIsThinking(true)
+    setTimeout(()=>setIsThinking(false), 2500)
+    // في التطبيق الحقيقي: استدعي الـ gateway/api الذي يوجّه إلى مزود AI
+  }
 
-    return (
-        <div className="app h-screen flex flex-col bg-[var(--bg-primary)]">
-            {/* Top Navigation / Header */}
-            <header className="app-header flex items-center justify-between px-6 py-2 border-b border-[var(--border)] bg-[var(--bg-primary)]">
-                <div className="flex items-center gap-2">
-                    <img src="/claude-logo.svg" alt="App Logo" className="w-6 h-6" />
-                    <h1 className="text-base font-semibold text-[var(--text-primary)]">Open Claude</h1>
-                </div>
-
-                <div className="flex items-center gap-4">
-                    {currentMode === MODES.CHAT && (
-                        <button
-                            onClick={createNewChat}
-                            className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] rounded-md transition-colors"
-                            title="New Chat"
-                        >
-                            <Plus size={18} />
-                        </button>
-                    )}
-
-                    <ModeSwitcher />
-
-                    <div className="h-6 w-px bg-[var(--border)] mx-2" />
-
-                    <button
-                        onClick={toggleTheme}
-                        className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] rounded-md transition-colors"
-                        title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                    >
-                        {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
-                    </button>
-
-                    <button
-                        onClick={toggleIncognitoMode}
-                        className={`p-1.5 rounded-md transition-colors ${isIncognitoMode
-                            ? 'bg-[var(--accent)] text-white'
-                            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
-                            }`}
-                        title={isIncognitoMode ? "Disable Incognito Mode" : "Enable Incognito Mode"}
-                    >
-                        {isIncognitoMode ? <Lock size={18} /> : <Unlock size={18} />}
-                    </button>
-                </div>
-            </header>
-
-            {/* Mode-Specific UI */}
-            <main className="app-main flex-1 overflow-hidden relative">
-                {currentMode === MODES.CHAT && <ChatMode />}
-                {currentMode === MODES.CODE && <CodeMode />}
-                {currentMode === MODES.BUILD && <BuildMode />}
-            </main>
+  return (
+    <div className="container">
+      <header className="header">
+        <div className="brand-left">
+          <div className={`brand-logo-wrapper brand-logo ${isThinking ? 'thinking' : ''}`}>
+            <img src="/shaheen-logo.png" alt="SHAHEEN-YS" className="shaheen-main"/>
+            <img src="/termux-icon.svg" alt="" className="termux-icon"/>
+            <div className="brand-text">SHAHEEN-YS</div>
+          </div>
+          <div>
+            <div style={{opacity:0.85,fontSize:16,fontWeight:700}}>{provider}</div>
+            <div style={{opacity:0.5,fontSize:13}}>الافتراضي</div>
+          </div>
         </div>
-    );
-}
+        <div>
+          <img src="/shaheen-favicon.png" alt="user" style={{width:38,height:38,borderRadius:8}}/>
+        </div>
+      </header>
 
-import { ThemeProvider } from './context/ThemeContext';
+      <div className="card">
+        <div style={{fontSize:15,opacity:0.85,marginBottom:10}}>كيف استطيع مساعدتك اليوم؟</div>
+        <textarea value={prompt} onChange={(e)=>setPrompt(e.target.value)} style={{width:'100%',minHeight:80,background:'transparent',border:'none',color:'#fff',outline:'none'}} />
+        <div style={{display:'flex',justifyContent:'flex-end',gap:8,marginTop:12}}>
+          <button onClick={handleSend} style={{background:'#fff',color:'#000',padding:'10px 14px',borderRadius:10,fontWeight:700}}>إرسال</button>
+        </div>
+      </div>
 
-export default function App() {
-    return (
-        <ComposeProviders>
-            <AppContent />
-        </ComposeProviders>
-    );
-}
+      <div className="suggest-list">
+        <div style={{marginTop:16,color:'#bbb',fontWeight:700}}>مقترحات</div>
+        {['Build API','Improve my prompt','Build AI Agent','Generate project files'].map((t,i)=>(
+          <div key={i} className="suggest-item" onClick={()=>{setPrompt(t); handleSend()}}>
+            {t}
+          </div>
+        ))}
+      </div>
 
-function ComposeProviders({ children }) {
-    return (
-        <ThemeProvider>
-            <BuildModeProvider>
-                <BuildProvider>
-                    <ChatProvider>
-                        {children}
-                    </ChatProvider>
-                </BuildProvider>
-            </BuildModeProvider>
-        </ThemeProvider>
-    );
+      <div className="footer"></div>
+    </div>
+  )
 }

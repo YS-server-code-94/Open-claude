@@ -1,0 +1,9 @@
+{
+  "project": {
+    "name": "shaheen-ys"
+  },
+  "services": [
+    { "name": "web", "type": "docker", "dockerfilePath": "Dockerfile" },
+    { "name": "api", "type": "docker", "dockerfilePath": "server/Dockerfile" }
+  ]
+}
